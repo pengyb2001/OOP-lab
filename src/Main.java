@@ -132,7 +132,7 @@ public class Main {
             this.direction = direction;
         }
 
-        public void move(Map map) {//TODO:检测地图边界
+        public void move(Map map) {
             if (direction == 0) {
                 if(y < map.COLUMNS -1) {
                     y++;
