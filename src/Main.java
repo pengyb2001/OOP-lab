@@ -52,7 +52,7 @@ public class Main {
             String command = scanner.nextLine();
             switch (command) {
                 case "move" -> {
-                    robot.move();
+                    robot.move(map);
                     map.updateMap(robot);
                 }
                 case "turnLeft" -> {
@@ -132,15 +132,33 @@ public class Main {
             this.direction = direction;
         }
 
-        public void move() {//TODO:检测地图边界
+        public void move(Map map) {//TODO:检测地图边界
             if (direction == 0) {
-                y++;
+                if(y < map.COLUMNS -1) {
+                    y++;
+                } else {
+                    System.out.println("Can't move, hit the wall!");
+                }
+
             } else if (direction == 1) {
-                x--;
+                if(x > 0) {
+                    x--;
+                } else {
+                    System.out.println("Can't move, hit the wall!");
+                }
+
             } else if (direction == 2) {
-                y--;
+                if(y > 0) {
+                    y--;
+                } else {
+                    System.out.println("Can't move, hit the wall!");
+                }
             } else if (direction == 3) {
-                x++;
+                if(x < map.ROWS -1) {
+                    x++;
+                } else {
+                    System.out.println("Can't move, hit the wall!");
+                }
             }
         }
 
