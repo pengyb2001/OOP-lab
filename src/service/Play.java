@@ -20,8 +20,16 @@ public class Play {
                     case "move" -> {
                         int steps = parsedCommand.getArg() == 0 ? 1 : parsedCommand.getArg(); // 如果未指定步数，默认为 1 步
                         for (int i = 0; i < steps; i++) {
+                            int oldX = robot.getX();
+                            int oldY = robot.getY();
                             robot.move(map);
-                            map.updateMap(robot);
+                            if (robot.getX() == oldX && robot.getY() == oldY) {
+                                System.out.println("You can't move any further. Please re-enter the command.");
+                                break;
+                            }
+                            else {
+                                map.updateMap(robot);
+                            }
                         }
                     }
                     case "turnLeft" -> {
