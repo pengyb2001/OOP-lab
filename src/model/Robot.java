@@ -19,57 +19,77 @@ public class Robot {
         this.direction = direction;
     }
 
-    public void move(Map map) {
-        if (direction == 0) {
-            if(y == map.getColumns() -1) {
-                System.out.println("Can't move, hit the wall!");
+    private int getNextX(Map map) {
+        //返回-1表示以目前的方向走下一步会撞到边界
+        switch(direction) {
+            case 0 -> {
+                if(y == map.getColumns() - 1)
+                    return -1;
+                else return x;
             }
-            else if (map.getMapPoint(x, y+1) == '■') {
-                System.out.println("Can't move, hit the wall!");
+            case 1 -> {
+                if(x == 0)
+                    return -1;
+                else return x - 1;
             }
-            else if (map.getMapPoint(x, y+1) == '●') {
-                System.out.println("Can't move, hit the rock!");
+            case 2 -> {
+                if(y == 0)
+                    return -1;
+                else return x;
             }
-            else {
-                y++;
+            case 3 -> {
+                if(x == map.getRows() - 1)
+                    return -1;
+                else return x + 1;
             }
-
-        } else if (direction == 1) {
-            if(x == 0) {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x-1, y) == '■') {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x-1, y) == '●') {
-                System.out.println("Can't move, hit the rock!");
-            }
-            else {
-                x--;
-            }
-
-        } else if (direction == 2) {
-            if(y == 0) {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x, y-1) == '■') {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x, y-1) == '●') {
-                System.out.println("Can't move, hit the rock!");
-            }
-            else {
-                y--;
-            }
-        } else if (direction == 3) {
-            if(x == map.getRows() -1) {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x+1, y) == '■') {
-                System.out.println("Can't move, hit the wall!");
-            } else if (map.getMapPoint(x+1, y) == '●') {
-                System.out.println("Can't move, hit the rock!");
-            }
-            else {
-                x++;
+            default -> {
+                return -1;
             }
         }
     }
+
+    private int getNextY(Map map) {
+        //返回-1表示以目前的方向走下一步会撞到边界
+        switch(direction) {
+            case 0 -> {
+                if(y == map.getColumns() - 1)
+                    return -1;
+                else return y + 1;
+            }
+            case 1 -> {
+                if(x == 0)
+                    return -1;
+                else return y;
+            }
+            case 2 -> {
+                if(y == 0)
+                    return -1;
+                else return y - 1;
+            }
+            case 3 -> {
+                if(x == map.getRows() - 1)
+                    return -1;
+                else return y;
+            }
+            default -> {
+                return -1;
+            }
+        }
+    }
+
+    public void move(Map map) {
+        int nextX = getNextX(map);
+        int nextY = getNextY(map);
+        if(nextX == -1 || nextY == -1) {
+            System.out.println("Can't move, hit the wall!");
+        } else if (map.getMapPoint(nextX, nextY) == '●') {
+            System.out.println("Can't move, hit the rock!");
+        } else {
+            x = nextX;
+            y = nextY;
+        }
+    }
+
 
 
     public void turnLeft() {
@@ -106,46 +126,19 @@ public class Robot {
     }
 
     public void pickRock(Map map) {
-        switch (direction) {
-            case 0 -> {
-                if (map.getMapPoint(x, y + 1) != '●' || y == map.getColumns() - 1) {
-                    System.out.println("There is no rock ahead! Please enter again.");
-                } else {
-                    map.updateMapAfterPick(x, y + 1);
-                    System.out.println("You have got a rock!");
-                    System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
-                }
-            }
-            case 1 -> {
-                if (map.getMapPoint(x - 1, y) != '●' || x == 0) {
-                    System.out.println("There is no rock ahead! Please enter again.");
-                } else {
-                    map.updateMapAfterPick(x - 1, y);
-                    System.out.println("You have got a rock!");
-                    System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
-                }
-            }
-            case 2 -> {
-                if (map.getMapPoint(x, y - 1) != '●' || y == 0) {
-                    System.out.println("There is no rock ahead! Please enter again.");
-                } else {
-                    map.updateMapAfterPick(x, y - 1);
-                    System.out.println("You have got a rock!");
-                    System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
-                }
-            }
-            case 3 -> {
-                if (map.getMapPoint(x + 1, y) != '●' || x == map.getRows() - 1) {
-                    System.out.println("There is no rock ahead! Please enter again.");
-                } else {
-                    map.updateMapAfterPick(x + 1, y);
-                    System.out.println("You have got a rock!");
-                    System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
-                }
-            }
-
+        int nextX = getNextX(map);
+        int nextY = getNextY(map);
+        if(nextX == -1 || nextY == -1) {
+            System.out.println("There is no rock ahead! Please enter again.");
+        } else if (map.getMapPoint(nextX, nextY) != '●') {
+            System.out.println("There is no rock ahead! Please enter again.");
+        } else {
+            map.updateMapAfterPick(nextX, nextY);
+            System.out.println("You have got a rock!");
+            System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
         }
     }
+
 
     public int getX() {
         return x;

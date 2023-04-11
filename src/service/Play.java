@@ -24,7 +24,7 @@ public class Play {
                             int oldY = robot.getY();
                             robot.move(map);
                             if (robot.getX() == oldX && robot.getY() == oldY) {
-                                System.out.println("You can't move any further. Please re-enter the command.");
+//                                System.out.println("You can't move any further. Please re-enter the command.");
                                 break;
                             }
                             else {
@@ -56,6 +56,14 @@ public class Play {
                             map.updateMap(robot);
                         }
                     }
+//                    case "noRockPresent" -> {
+//                        if(robot.getRock() == 0) {
+//                            System.out.println("true");
+//                        }
+//                        else {
+//                            System.out.println("false");
+//                        }
+//                    }
                     case "Q", "q" -> {
                         System.exit(0);
                     }
