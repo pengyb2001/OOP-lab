@@ -35,8 +35,11 @@ public class Main {
                     play.play(robot, map);
                 }
                 case "STAGE3", "stage3" -> {
-                   System.out.println("This stage is not available yet. Please re-enter it");
-                }//TODO
+                   Robot robot = new Robot(4, 0, 0);
+                    Map map = new Stage3(robot);
+                    Play play =new Play();
+                    play.play(robot, map);
+                }
                 case "Q", "q" -> {
                     continue;
                 }

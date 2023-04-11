@@ -8,6 +8,8 @@ public abstract class Map {
     protected int Y;
     protected int rocksNum;
     protected int rocksInBagNum = 0;
+    protected int trapsNum;
+    protected int filledTrapsNum = 0;
 
 
     public Map(Robot robot, int rows, int columns) {
@@ -21,24 +23,24 @@ public abstract class Map {
         }
         X = robot.getX();
         Y = robot.getY();
-        map[X][Y] = robot.getDirectionPic();
     }
 
     public abstract void initialize(); // 初始化地图
 
-    public void printMap() {
+    public void printMap(Robot robot) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                System.out.print(map[i][j] + " ");
+                if (i == X && j == Y) {
+                    System.out.print(robot.getDirectionPic() + " ");
+                }
+                else System.out.print(map[i][j] + " ");
             }
             System.out.println();
         }
     }
 
     public void updateMap(Robot robot) {
-        map[this.X][this.Y] = '.';
-        map[robot.getX()][robot.getY()] = robot.getDirectionPic();
-        //在地图中更新机器人的位置
+        //在地图数据中更新机器人的位置
         this.X = robot.getX();
         this.Y = robot.getY();
     }
@@ -71,6 +73,14 @@ public abstract class Map {
         map[rockX][rockY] = '.';
         rocksNum--;
         rocksInBagNum++;
+    }
+
+    //机器人放下一颗石头后更新地图的参数
+    public void updateMapAfterPut(int rockX, int rockY) {
+        map[rockX][rockY] = '×';
+        rocksInBagNum--;
+        trapsNum--;
+        filledTrapsNum++;
     }
 
     public int getX() {

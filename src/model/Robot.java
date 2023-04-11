@@ -19,7 +19,7 @@ public class Robot {
         this.direction = direction;
     }
 
-    private int getNextX(Map map) {
+    public int getNextX(Map map) {
         //返回-1表示以目前的方向走下一步会撞到边界
         switch(direction) {
             case 0 -> {
@@ -48,7 +48,7 @@ public class Robot {
         }
     }
 
-    private int getNextY(Map map) {
+    public int getNextY(Map map) {
         //返回-1表示以目前的方向走下一步会撞到边界
         switch(direction) {
             case 0 -> {
@@ -80,17 +80,17 @@ public class Robot {
     public void move(Map map) {
         int nextX = getNextX(map);
         int nextY = getNextY(map);
-        if(nextX == -1 || nextY == -1) {
-            System.out.println("Can't move, hit the wall!");
+        if (nextX == -1 || nextY == -1) {
+            System.out.println("Can't move, hit the edge!");
         } else if (map.getMapPoint(nextX, nextY) == '●') {
             System.out.println("Can't move, hit the rock!");
+        } else if (map.getMapPoint(nextX, nextY) == '■') {
+            System.out.println("Can't move, hit the wall!");
         } else {
             x = nextX;
             y = nextY;
         }
     }
-
-
 
     public void turnLeft() {
         direction = (direction + 1) % 4;
@@ -125,20 +125,53 @@ public class Robot {
 
     }
 
-    public void pickRock(Map map) {
+    public boolean noRockInBag(Map map) {
+        return map.getRocksInBagNum() == 0;
+    }
+
+    //判断卡雷尔机器人面向的前方一格是否有石头，如果没有，打印 true.如果有，打印false。
+    // 对于用石头填满的陷阱，也应打印 false
+    public boolean noRockPresent(Map map) {
         int nextX = getNextX(map);
         int nextY = getNextY(map);
-        if(nextX == -1 || nextY == -1) {
-            System.out.println("There is no rock ahead! Please enter again.");
+        if (nextX == -1 || nextY == -1) {
+            return true;
+        } else if (map.getMapPoint(nextX, nextY) == '×') {
+            return false;
         } else if (map.getMapPoint(nextX, nextY) != '●') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void pickRock(Map map) {
+        if (map.getMapPoint(getNextX(map), getNextY(map)) == '×') {
+            System.out.println("You can't pick a rock in a filled trap! Please enter again.");
+        } else if (noRockPresent(map)) {
             System.out.println("There is no rock ahead! Please enter again.");
         } else {
-            map.updateMapAfterPick(nextX, nextY);
+            map.updateMapAfterPick(getNextX(map), getNextY(map));
             System.out.println("You have got a rock!");
             System.out.println("Now you have " + map.getRocksInBagNum() + " in your bag.");
         }
     }
 
+    public void putRock(Map map) {
+        int nextX = getNextX(map);
+        int nextY = getNextY(map);
+        if (noRockInBag(map)) {
+            System.out.println("You have no rock in your bag! Please enter again.");
+        } else if (nextX == -1 || nextY == -1) {
+            System.out.println("You can't put a rock out of the map! Please enter again.");
+        } else if (map.getMapPoint(nextX, nextY) != '⊙') {
+            System.out.println("You can't put a rock here! Please enter again.");
+        } else {
+            map.updateMapAfterPut(nextX, nextY);
+            System.out.println("You have put down a rock!");
+            System.out.println("Now you have " + map.getRocksInBagNum() + " left.");
+        }
+    }
 
     public int getX() {
         return x;

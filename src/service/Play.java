@@ -8,8 +8,9 @@ import java.util.regex.*;
 public class Play {
     public void play(Robot robot, Map map) {
         while(true) {
-            map.printMap();
-            System.out.println("Enter command: (move(), move(n), turnLeft(), showInformation(), pickRock(), Q)");
+            map.printMap(robot);
+            System.out.println("Enter command: (move(), move(n), turnLeft(), showInformation(), pickRock(), " +
+                    "putRock(), noRockPresent(), noRockInBag(), Q)");
             //注意输入带参数的指令时要按原本的字符串顺序输入，不能先把括号输入了再往中间填数字，不然命令行是读不到后输进去的数字的
             System.out.print("> ");
             Scanner scanner = new Scanner(System.in);
@@ -22,10 +23,14 @@ public class Play {
                         for (int i = 0; i < steps; i++) {
                             int oldX = robot.getX();
                             int oldY = robot.getY();
+
                             robot.move(map);
                             if (robot.getX() == oldX && robot.getY() == oldY) {
-//                                System.out.println("You can't move any further. Please re-enter the command.");
+                                System.out.println("You can't move any further. Please re-enter the command.");
                                 break;
+                            } else if (map.getMapPoint(robot.getX(), robot.getY()) == '⊙') {
+                                System.out.println("You are trapped! Game over!");
+                                System.exit(0);
                             }
                             else {
                                 map.updateMap(robot);
@@ -43,12 +48,14 @@ public class Play {
                         robot.pickRock(map);
                         if (map.isFinished()) {
                             System.out.println("Congratulations! You win the game! Press Q to quit. Press any other key to continue.");
-                            Scanner scanner1 = new Scanner(System.in);
-                            String command1 = scanner1.nextLine();
-                            if(command1.equals("Q") || command1.equals("q")) {
+                            String commandAfterWin = scanner.nextLine();
+                            if(commandAfterWin.equals("Q") || commandAfterWin.equals("q")) {
                                 System.exit(0);
                             }
                         }
+                    }
+                    case "putRock" -> {
+                        robot.putRock(map);
                     }
                     case "turnRight" -> {
                         for(int i = 0; i < 3; i++) {
@@ -56,14 +63,22 @@ public class Play {
                             map.updateMap(robot);
                         }
                     }
-//                    case "noRockPresent" -> {
-//                        if(robot.getRock() == 0) {
-//                            System.out.println("true");
-//                        }
-//                        else {
-//                            System.out.println("false");
-//                        }
-//                    }
+                    case "noRockPresent" -> {
+                        if(robot.noRockPresent(map)) {
+                            System.out.println("true");
+                        }
+                        else {
+                            System.out.println("false");
+                        }
+                    }
+                    case "noRockInBag" -> {
+                        if(robot.noRockInBag(map)) {
+                            System.out.println("true");
+                        }
+                        else {
+                            System.out.println("false");
+                        }
+                    }
                     case "Q", "q" -> {
                         System.exit(0);
                     }
