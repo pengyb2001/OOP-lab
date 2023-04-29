@@ -21,29 +21,43 @@ public class Main {
                 case "NEW MAP", "new map" -> {
                     System.out.println("Please input your map line by line:");
                     MapReader mapReader = new MapReader();
-                    Robot robot = new Robot(mapReader.robotX, mapReader.robotY, mapReader.robotDirection);
-                    Map map = new NewMap(robot, mapReader);
-                    System.out.println("OK\n" +"Stage with your own map:");
-                    Play play =new Play();
-                    play.play(robot, map);
+                    String result = "playAgain";
+                    while (result.equals("playAgain")) {
+                        System.out.println("OK\n" +"Stage with your own map:");
+                        Robot robot = new Robot(mapReader.robotX, mapReader.robotY, mapReader.robotDirection);
+                        Map map = new NewMap(robot, mapReader);
+                        Play play =new Play();
+                        result = play.play(robot, map);
+                    }
                 }
                 case "STAGE1", "stage1"-> {
-                    Robot robot = new Robot(1, 0, 0);
-                    Map map = new Stage1(robot);
-                    Play play =new Play();
-                    play.play(robot, map);
+                    String result = "playAgain";
+                    while(result.equals("playAgain")) {
+                        Robot robot = new Robot(1, 0, 0);
+                        Map map = new Stage1(robot);
+                        Play play =new Play();
+                        result = play.play(robot, map);
+                    }
                 }
+
+
                 case "STAGE2", "stage2"-> {
-                    Robot robot = new Robot(2, 0, 0);
-                    Map map = new Stage2(robot);
-                    Play play =new Play();
-                    play.play(robot, map);
+                    String result = "playAgain";
+                    while(result.equals("playAgain")) {
+                        Robot robot = new Robot(2, 0, 0);
+                        Map map = new Stage2(robot);
+                        Play play =new Play();
+                        result = play.play(robot, map);
+                    }
                 }
                 case "STAGE3", "stage3" -> {
-                    Robot robot = new Robot(4, 0, 0);
-                    Map map = new Stage3(robot);
-                    Play play =new Play();
-                    play.play(robot, map);
+                    String result = "playAgain";
+                    while(result.equals("playAgain")) {
+                        Robot robot = new Robot(3, 0, 0);
+                        Map map = new Stage3(robot);
+                        Play play =new Play();
+                        result = play.play(robot, map);
+                    }
                 }
                 case "Q", "q" -> {
                 }

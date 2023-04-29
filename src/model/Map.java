@@ -1,6 +1,11 @@
 package model;
 
-public abstract class Map {
+public abstract class Map implements Cloneable {
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     protected int rows;
     protected int columns;
     protected char[][] map;

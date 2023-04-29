@@ -6,8 +6,8 @@ import java.util.Scanner;
 import java.util.regex.*;
 
 public class Play {
-    public void play(Robot robot, Map map) {
-        while(true) {
+    public String play(Robot robot, Map map) {
+        while (true) {
             map.printMap(robot);
             System.out.println("Enter command: (move(), move(n), turnLeft(), showInformation(), pickRock(), " +
                     "putRock(), noRockPresent(), noRockInBag(), Q)");
@@ -29,9 +29,19 @@ public class Play {
                                 break;
                             } else if (map.isFailed(robot)) {
                                 System.out.println("You are trapped! Game over!");
-                                System.exit(0);
-                            }
-                            else {
+                                while (true) {
+                                    System.out.println("Do you want to play again? (Y/N)");
+                                    String input = scanner.nextLine().toUpperCase();
+                                    if (input.equals("Y")) {
+                                        // 重置地图
+                                        return "playAgain";
+                                    } else if (input.equals("N")) {
+                                        return "exit";
+                                    } else {
+                                        System.out.println("Invalid input. Please enter Y or N.");
+                                    }
+                                }
+                            } else {
                                 map.updateMap(robot);
                             }
                         }
@@ -46,37 +56,41 @@ public class Play {
                     case "pickRock" -> {
                         robot.pickRock(map);
                         if (map.isWon()) {
-//                            System.out.println("Congratulations! You win the game! Press Q to quit. Press any other key to continue.");
                             System.out.println("Congratulations! You win the game! Game Over.");
-                            System.exit(0);
-//                            String commandAfterWin = scanner.nextLine();
-//                            if(commandAfterWin.equals("Q") || commandAfterWin.equals("q")) {
-//                                System.exit(0);
-//                            }
+//                            System.exit(0);
+                            while (true) {
+                                System.out.println("Do you want to play again? (Y/N)");
+                                String input = scanner.nextLine().toUpperCase();
+                                if (input.equals("Y")) {
+                                    return "playAgain";
+                                } else if (input.equals("N")) {
+                                    return "exit";
+                                } else {
+                                    System.out.println("Invalid input. Please enter Y or N.");
+                                }
+                            }
                         }
                     }
                     case "putRock" -> {
                         robot.putRock(map);
                     }
                     case "turnRight" -> {
-                        for(int i = 0; i < 3; i++) {
+                        for (int i = 0; i < 3; i++) {
                             robot.turnLeft();
                             map.updateMap(robot);
                         }
                     }
                     case "noRockPresent" -> {
-                        if(robot.noRockPresent(map)) {
+                        if (robot.noRockPresent(map)) {
                             System.out.println("true");
-                        }
-                        else {
+                        } else {
                             System.out.println("false");
                         }
                     }
                     case "noRockInBag" -> {
-                        if(robot.noRockInBag(map)) {
+                        if (robot.noRockInBag(map)) {
                             System.out.println("true");
-                        }
-                        else {
+                        } else {
                             System.out.println("false");
                         }
                     }

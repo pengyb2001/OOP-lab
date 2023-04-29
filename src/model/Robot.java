@@ -1,7 +1,12 @@
 package model;
 
 
-public class Robot {
+public class Robot implements Cloneable {
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     //机器人的位置可以用x和y坐标表示，方向可以用一个整数表示，0表示向右，1表示向上，2表示向左，3表示向下。
     private static int x;
     private static int y;

@@ -44,7 +44,7 @@ public class MapReader {
             System.out.println("You have not input the map! Please input the map again!");
             return;
         }
-        System.out.println(this.rows); // debug
+//        System.out.println(this.rows); // debug
 
         int numCols = inputMap.get(0).length();
 
@@ -57,7 +57,7 @@ public class MapReader {
         }
 
         this.columns = numCols;
-        System.out.println(this.columns); // debug
+//        System.out.println(this.columns); // debug
 
         // 创建对应大小的二维数组
         this.map = new char[rows][columns];
@@ -76,19 +76,19 @@ public class MapReader {
             }
         }
 
-        System.out.println("rocksNum: " + rocksNum); // debug
-        System.out.println("trapsNum: " + trapsNum); // debug
-        System.out.println("robotDirection: " + robotDirection); // debug
-        System.out.println("robotX: " + robotX); // debug
-        System.out.println("robotY: " + robotY); // debug
+//        System.out.println("rocksNum: " + rocksNum); // debug
+//        System.out.println("trapsNum: " + trapsNum); // debug
+//        System.out.println("robotDirection: " + robotDirection); // debug
+//        System.out.println("robotX: " + robotX); // debug
+//        System.out.println("robotY: " + robotY); // debug
 
-        // debug 输出二维数组，检查地图是否正确读取
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                System.out.print(map[i][j] + " ");
-            }
-            System.out.println();
-        }
+//        // debug 输出二维数组，检查地图是否正确读取
+//        for (int i = 0; i < rows; i++) {
+//            for (int j = 0; j < columns; j++) {
+//                System.out.print(map[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
 
         // 检查地图是否有且仅有一个机器人
         if (robotX == -1 || robotY == -1) {

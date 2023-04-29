@@ -14,14 +14,14 @@ public class NewMap extends Map {
                 } else {
                     map[i][j] = mapReader.map[i][j];
                 }
-                System.out.println("mapReader为" + mapReader.map[i][j] + " map为" + map[i][j] + " "); //debug
+//                System.out.println("mapReader为" + mapReader.map[i][j] + " map为" + map[i][j] + " "); //debug
                 rocksNum = mapReader.rocksNum;
                 trapsNum = mapReader.trapsNum;
             }
         }
-        System.out.println("NewMap: "); //debug
-        printMap(robot); // debug
-        System.out.println("End"); //debug
+//        System.out.println("NewMap: "); //debug
+//        printMap(robot); // debug
+//        System.out.println("End"); //debug
     }
 
     @Override
