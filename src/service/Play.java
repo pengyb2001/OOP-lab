@@ -26,9 +26,8 @@ public class Play {
 
                             robot.move(map);
                             if (robot.getX() == oldX && robot.getY() == oldY) {
-                                System.out.println("You can't move any further. Please re-enter the command.");
                                 break;
-                            } else if (map.getMapPoint(robot.getX(), robot.getY()) == '⊙') {
+                            } else if (map.isFailed(robot)) {
                                 System.out.println("You are trapped! Game over!");
                                 System.exit(0);
                             }
@@ -46,12 +45,14 @@ public class Play {
                     }
                     case "pickRock" -> {
                         robot.pickRock(map);
-                        if (map.isFinished()) {
-                            System.out.println("Congratulations! You win the game! Press Q to quit. Press any other key to continue.");
-                            String commandAfterWin = scanner.nextLine();
-                            if(commandAfterWin.equals("Q") || commandAfterWin.equals("q")) {
-                                System.exit(0);
-                            }
+                        if (map.isWon()) {
+//                            System.out.println("Congratulations! You win the game! Press Q to quit. Press any other key to continue.");
+                            System.out.println("Congratulations! You win the game! Game Over.");
+                            System.exit(0);
+//                            String commandAfterWin = scanner.nextLine();
+//                            if(commandAfterWin.equals("Q") || commandAfterWin.equals("q")) {
+//                                System.exit(0);
+//                            }
                         }
                     }
                     case "putRock" -> {

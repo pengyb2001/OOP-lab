@@ -45,7 +45,7 @@ public abstract class Map {
         this.Y = robot.getY();
     }
 
-    public boolean isFinished() {
+    public boolean isWon() {
         if(rocksNum == 0) {
             return true;
         } else {
@@ -53,6 +53,13 @@ public abstract class Map {
         }
     }
 
+    public boolean isFailed(Robot robot) {
+        if (getMapPoint(robot.getX(), robot.getY()) == '⊙') {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public int getDistanceToNearestRock() {
         int minDist = Integer.MAX_VALUE;
         for (int i = 0; i < rows; i++) {
