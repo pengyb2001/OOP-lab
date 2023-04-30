@@ -2,6 +2,8 @@ package service;
 
 import model.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.*;
 
@@ -10,7 +12,8 @@ public class Play {
         while (true) {
             map.printMap(robot);
             System.out.println("Enter command: (move(), move(n), turnLeft(), showInformation(), pickRock(), " +
-                    "putRock(), noRockPresent(), noRockInBag(), Q)");
+                    "putRock(), noRockPresent(), noRockInBag(), Q" +
+                    (selfCommand != null ? ", " + selfCommand.getName() + "()" : "") + ")");
             //注意输入带参数的指令时要按原本的字符串顺序输入，不能先把括号输入了再往中间填数字，不然命令行是读不到后输进去的数字的
             System.out.print("> ");
             Scanner scanner = new Scanner(System.in);
@@ -30,20 +33,48 @@ public class Play {
                         conditionResult = robot.noRockInBag(map);
                     }
                     String commandStr = conditionResult ? parsedCommand.getLeftCommandStr() : parsedCommand.getRightCommandStr();
-                    System.out.println("Executing command: " + commandStr);//DEBUG
+//                    System.out.println("if-else Executing command: " + commandStr);//DEBUG
                     Command subCommand = parseCommand(removeSemicolon(commandStr)); // 解析去除分号后的子命令
                     String executeResult = executeCommand(subCommand, robot, map); // 执行子命令
                     if(executeResult != "continue") {
                         return executeResult;
                     }
-                } else {
-                    String executeResult = executeCommand(parsedCommand, robot, map); // 执行命令
+                }
+                else if(selfCommand != null && parsedCommand.getName().equals(selfCommand.getName())) {
+                    // 如果自创命令为空，或者用户输入的命令不是自创命令，就不执行这部分代码
+                    for(Command subCommand : selfCommand.getSubCommands()) {
+//                        System.out.println("Executing self command: " + subCommand.getName());//DEBUG
+                        String executeResult = executeCommand(subCommand, robot, map); // 依次执行子命令
+                        if(executeResult != "continue") {
+                            return executeResult;
+                        }
+                    }
+                }
+                else {
+                    String executeResult = executeCommand(parsedCommand, robot, map); // 单个命令情况 直接执行
                     if(executeResult != "continue") {
                         return executeResult;
                     }
                 }
             } else {
-                System.out.println("Invalid command. Please re-enter it.");
+                Command tryParseSelfCommand = parseSelfCommand(command);
+                if(tryParseSelfCommand != null) {
+                    boolean isValid = true;
+                    for(Command subCommand : tryParseSelfCommand.getSubCommands()) {
+                        if(subCommand == null) {
+                            isValid = false; // 无法解析的子命令
+                        }
+                    }
+                    // 如果子命令都能解析出来，就把自创命令赋值给 selfCommand
+                    if(isValid) {
+                        selfCommand = tryParseSelfCommand;
+                        System.out.println("You have got " + selfCommand.getName() + "() function.");
+                    } else {
+                        System.out.println("Invalid self command. Please re-enter it.");
+                    }
+                } else {
+                    System.out.println("Invalid command. Please re-enter it.");
+                }
             }
         }
     }
@@ -83,6 +114,10 @@ public class Play {
      */
     public String executeCommand(Command command, Robot robot, Map map) {
         if (command == null) {
+            System.out.println("Invalid command.");
+            return "continue";
+        }
+        if (!command.getName().equals("move") && command.getArg() != 0) {
             System.out.println("Invalid command.");
             return "continue";
         }
@@ -144,12 +179,6 @@ public class Play {
             case "putRock" -> {
                 robot.putRock(map);
             }
-            case "turnRight" -> {
-                for (int i = 0; i < 3; i++) {
-                    robot.turnLeft();
-                    map.updateMap(robot);
-                }
-            }
             case "noRockPresent" -> {
                 if (robot.noRockPresent(map)) {
                     System.out.println("true");
@@ -170,51 +199,13 @@ public class Play {
         }
         return "continue";
     }
-    public class Command {
-        private String name;
-        private int arg;
-        private String argStr;
-        private String  leftCommandStr;
-        private String rightCommandStr;
 
-        public Command(String name, int arg) {
-            this.name = name;
-            this.arg = arg;
-        }
-
-        public Command(String name, String argStr) {
-            this.name = name;
-            this.argStr = argStr;
-        }
-
-        public Command(String name, String argStr, String leftCommandStr, String rightCommandStr) {
-            this.name = name;
-            this.argStr = argStr;
-            this.leftCommandStr = leftCommandStr;
-            this.rightCommandStr = rightCommandStr;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getArg() {
-            return arg;
-        }
-
-        public String getArgStr() {
-            return argStr;
-        }
-
-        public String getLeftCommandStr() {
-            return leftCommandStr;
-        }
-
-        public String getRightCommandStr() {
-            return rightCommandStr;
-        }
-    }
-
+    /**
+     * 去除字符串末尾的分号。
+     *
+     * @param commandStr 待处理的字符串
+     * @return 去除末尾分号后的字符串
+     */
     public String removeSemicolon(String commandStr) {
         String trimmedStr = commandStr.trim(); // 去除前后空格
 
@@ -225,7 +216,24 @@ public class Play {
         }
     }
 
+    private Command selfCommand = null;
 
+    public Command parseSelfCommand(String input) {
+        Pattern pattern = Pattern.compile("^(\\w+)\\(\\)\\{(.*)\\}$");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.matches()) {
+            String functionName = matcher.group(1);
+            String commandsStr = matcher.group(2);
+            String commandsArr[] = commandsStr.split(";");
+            List<Command> commands = new ArrayList<>();
+            for (String commandStr : commandsArr) {
+                commands.add(parseCommand(commandStr));
+            }
+            return new Command(functionName, commands);
+        } else {
+            return null;
+        }
+    }
 
 }
 
